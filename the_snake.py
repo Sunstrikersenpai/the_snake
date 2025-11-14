@@ -75,7 +75,10 @@ class Apple(GameObject):
         return x, y
 
     def respawn(self, snake_position):
-        """Перемещает яблоко в новое случайное место, исключая координаты змейки."""
+        """
+        Перемещает яблоко в новое случайное место,
+        исключая координаты змейки.
+        """
         while True:
             new_pos = self.randomize_position()
             if new_pos not in snake_position:
