@@ -45,33 +45,45 @@ pygame.display.set_caption('Змейка')
 clock = pygame.time.Clock()
 
 
-# Тут опишите все классы игры.
 class GameObject:
+    """Базовый класс игровых объектов."""
+
     def __init__(self, position=None, body_color=None) -> None:
         self.position = position
         self.body_color = body_color
+
+    """Метод отрисовки объекта. Должен быть переопределён в наследниках."""
 
     def draw(self):
         raise NotImplementedError('Method must be implemented in subclass')
 
 
 class Apple(GameObject):
+    """Класс яблока.
+    Отвечает за генерацию и отрисовку яблока.
+    """
+
     def __init__(self) -> None:
         position = self.randomize_position()
         super().__init__(position, APPLE_COLOR)
+
+    """Возвращает случайную позицию яблока."""
 
     def randomize_position(self):
         x = randint(0, GRID_WIDTH - 1) * GRID_SIZE
         y = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
         return x, y
 
-    # По тз должен быть просто метод randomize_position, но мне так больше нравится
+    """Перемещает яблоко в новое случайное место, исключая координаты змейки."""
+
     def respawn(self, snake_position):
         while True:
             new_pos = self.randomize_position()
             if new_pos not in snake_position:
                 self.position = new_pos
                 break
+
+    """Отрисовывает яблоко на экране."""
 
     def draw(self):
         rect = pygame.Rect(self.position, (GRID_SIZE, GRID_SIZE))
@@ -80,6 +92,11 @@ class Apple(GameObject):
 
 
 class Snake(GameObject):
+    """
+    Класс змейки.
+    Отвечает за хранение позиций тела, обработку движения и столкновений.
+    """
+
     def __init__(self, next_direction=None) -> None:
         super().__init__(body_color=SNAKE_COLOR)
         # По тз требуется именно поле positionS.
@@ -96,6 +113,7 @@ class Snake(GameObject):
             pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
 
     def move(self):
+        """Перемещает змейку в текущем направлении."""
         x, y = self.get_head_position()
         x = (x + self.direction[0] * GRID_SIZE) % SCREEN_WIDTH
         y = (y + self.direction[1] * GRID_SIZE) % SCREEN_HEIGHT
@@ -109,22 +127,25 @@ class Snake(GameObject):
             self.positions.pop()
 
     def update_direction(self):
+        """Применяет новое направление движения."""
         if self.next_direction:
             self.direction = self.next_direction
             self.next_direction = None
 
     def get_head_position(self):
+        """Возвращает позицию головы змейки"""
         return self.positions[0]
 
     def reset(self):
+        """Сбрасывает змейку в начальное состояние после столкновения."""
         self.length = BASE_SNAKE_LENGTH
         self.positions = [BOARD_CENTER]
         self.direction = choice([UP, DOWN, LEFT, RIGHT])
         self.next_direction = None
 
 
-# Функция обработки действий пользователя
 def handle_keys(game_object):
+    """Функция обработки действий пользователя"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
