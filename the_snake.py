@@ -52,10 +52,11 @@ class GameObject:
         self.position = position
         self.body_color = body_color
 
-    """Метод отрисовки объекта. Должен быть переопределён в наследниках."""
-
     def draw(self):
-        raise NotImplementedError('Method must be implemented in subclass')
+        """Метод отрисовки объекта. Должен быть переопределён в наследниках."""
+        raise NotImplementedError(
+            'Method must be implemented in subclass'
+        )
 
 
 class Apple(GameObject):
@@ -67,25 +68,22 @@ class Apple(GameObject):
         position = self.randomize_position()
         super().__init__(position, APPLE_COLOR)
 
-    """Возвращает случайную позицию яблока."""
-
     def randomize_position(self):
+        """Возвращает случайную позицию яблока."""
         x = randint(0, GRID_WIDTH - 1) * GRID_SIZE
         y = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
         return x, y
 
-    """Перемещает яблоко в новое случайное место, исключая координаты змейки."""
-
     def respawn(self, snake_position):
+        """Перемещает яблоко в новое случайное место, исключая координаты змейки."""
         while True:
             new_pos = self.randomize_position()
             if new_pos not in snake_position:
                 self.position = new_pos
                 break
 
-    """Отрисовывает яблоко на экране."""
-
     def draw(self):
+        """Метод отрисовки яблока."""
         rect = pygame.Rect(self.position, (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(screen, self.body_color, rect)
         pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
@@ -107,6 +105,7 @@ class Snake(GameObject):
         self.next_direction = next_direction
 
     def draw(self):
+        """Метод отрисовки змейки."""
         for pos in self.positions:
             rect = pygame.Rect(pos, (GRID_SIZE, GRID_SIZE))
             pygame.draw.rect(screen, self.body_color, rect)
@@ -162,6 +161,7 @@ def handle_keys(game_object):
 
 
 def main():
+    """Основной цикл игры."""
     pygame.init()
     snake = Snake()
     apple = Apple()
