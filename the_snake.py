@@ -100,7 +100,11 @@ class Snake(GameObject):
     Отвечает за хранение позиций тела, обработку движения и столкновений.
     """
 
-    def __init__(self, body_color=SNAKE_COLOR, border_color=BORDER_COLOR) -> None:
+    def __init__(
+            self,
+            body_color=SNAKE_COLOR,
+            border_color=BORDER_COLOR
+    ) -> None:
         super().__init__(body_color, border_color)
         self.positions = [self.position]
         self.length = 1
