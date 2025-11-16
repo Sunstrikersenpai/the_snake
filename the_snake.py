@@ -47,10 +47,10 @@ clock = pg.time.Clock()
 class GameObject:
     """Базовый класс игровых объектов."""
 
-    def __init__(self) -> None:
+    def __init__(self, body_color=None, border_color=None) -> None:
         self.position = BOARD_CENTER
-        self.border_color = BORDER_COLOR
-        self.body_color = None
+        self.border_color = border_color
+        self.body_color = body_color
 
     def draw(self):
         """Метод отрисовки объекта. Должен быть переопределён в наследниках."""
@@ -70,9 +70,13 @@ class Apple(GameObject):
     Отвечает за генерацию и отрисовку яблока.
     """
 
-    def __init__(self, occupied_positions=BOARD_CENTER) -> None:
-        super().__init__()
-        self.body_color = APPLE_COLOR
+    def __init__(
+            self,
+            body_color=APPLE_COLOR,
+            border_color=BORDER_COLOR,
+            occupied_positions=BOARD_CENTER
+    ) -> None:
+        super().__init__(body_color, border_color)
         self.randomize_position(occupied_positions)
 
     def randomize_position(self, occupied_positions):
@@ -96,12 +100,11 @@ class Snake(GameObject):
     Отвечает за хранение позиций тела, обработку движения и столкновений.
     """
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, body_color=SNAKE_COLOR, border_color=BORDER_COLOR) -> None:
+        super().__init__(body_color, border_color)
         self.positions = [self.position]
         self.length = 1
         self.direction = RIGHT
-        self.body_color = SNAKE_COLOR
         self.next_direction = None
 
     def draw(self):
@@ -168,12 +171,11 @@ def main():
         snake.update_direction()
         snake.move()
 
-        if snake.get_head_position() == apple.position:
-            snake.length += 1
-            apple.randomize_position(snake.positions)
-
         if snake.get_head_position() in snake.positions[1:]:
             snake.reset()
+            apple.randomize_position(snake.positions)
+        elif snake.get_head_position() == apple.position:
+            snake.length += 1
             apple.randomize_position(snake.positions)
 
         screen.fill(BOARD_BACKGROUND_COLOR)
